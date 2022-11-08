@@ -45,6 +45,12 @@ async function run(){
       const result = await cursor.limit(3).toArray()
       res.send(result)
     })
+    app.get('/service/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = {servicesId: parseInt(id)}
+      const result = await services.findOne(query);
+      res.send(result)
+    })
 
 
 
@@ -57,7 +63,12 @@ async function run(){
 
 
 
-
+    // app.delete('/product/:id', async(req, res) =>{
+    //   const id = req.params.id;
+    //   const query = {_id: ObjectId};
+    //   const result = await productsCollection.deleteOne(query);
+    //   res.send(result);
+    // })
 
 
 

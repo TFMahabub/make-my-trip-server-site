@@ -19,16 +19,10 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@clu
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
-// client.connect(err => {
-//   const collection = client.db("test").collection("devices");
-//   // perform actions on the collection object
-//   client.close();
-// });
-
 
 
 async function run(){
-  const services = client.db('make-my-trip').collection('services')
+  const services = client.db('make-my-trip').collection('services');
 
   try{
 
@@ -54,7 +48,7 @@ async function run(){
 
 
 
-
+   
 
 
 
@@ -89,8 +83,31 @@ run().catch(err => console.error(err))
 
 
 
+async function runReviews(){
+  const reviewCollection = client.db('make-my-trip').collection('reviews');
+  try{
+
+     app.post('/reviews', async(req, res) =>{
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review)
+      res.send(result);
+    })
 
 
+    app.get('/reviews/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {servicesId: parseInt(id)}
+      const cursor = reviewCollection.find(query);
+      const result = await cursor.toArray()
+      res.send(result);
+    })
+
+  }
+  catch{
+    console.error(error)
+  }
+}
+runReviews().catch(err => console.error(err))
 
 
 

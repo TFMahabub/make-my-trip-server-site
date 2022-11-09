@@ -87,19 +87,29 @@ async function runReviews(){
   const reviewCollection = client.db('make-my-trip').collection('reviews');
   try{
 
+    //allReviews-
      app.post('/reviews', async(req, res) =>{
       const review = req.body;
       const result = await reviewCollection.insertOne(review)
       res.send(result);
     })
 
-
+    //get with specific serviceId-
     app.get('/reviews/:id', async(req, res)=>{
       const id = parseInt(req.params.id);
       const query = {serviceId: id}
       const cursor = reviewCollection.find(query);
       const result = await cursor.toArray()
       res.send(result);
+    })
+
+    //get with specific email id-
+    app.get('/reviews', async(req, res)=>{
+      const userEmail = req.query.email;
+      const query = {userEmail: userEmail};
+      const cursor = reviewCollection.find(query);
+      const result = await cursor.toArray()
+      res.send(result)
     })
 
   }

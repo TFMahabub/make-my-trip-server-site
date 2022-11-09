@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
 
@@ -95,8 +95,8 @@ async function runReviews(){
 
 
     app.get('/reviews/:id', async(req, res)=>{
-      const id = req.params.id;
-      const query = {servicesId: parseInt(id)}
+      const id = parseInt(req.params.id);
+      const query = {serviceId: id}
       const cursor = reviewCollection.find(query);
       const result = await cursor.toArray()
       res.send(result);

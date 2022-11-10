@@ -46,6 +46,12 @@ async function run(){
       res.send(result)
     })
 
+    //post a service-
+    app.post('/service', async(req, res) =>{
+      const service = req.body;
+      const result = await services.insertOne(service)
+      res.send(result);
+    })
 
 
 
@@ -133,27 +139,6 @@ async function runReviews(){
   }
 }
 runReviews().catch(err => console.error(err))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -98,15 +98,31 @@ async function runReviews(){
     //delete one review item with _id-
     app.delete('/reviews/:id', async(req, res)=>{
       const id = req.params.id;
-      const query = {_id: ObjectId};
+      const query = {_id: ObjectId(id)};
       const result = await reviewCollection.deleteOne(query);
       res.send(result)
     })
 
-
     //udate one review item with _id-
+    app.patch('/reviews/update/:id', async(req, res)=>{
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const review = req.body;
+      const option = {upsert: true}
+      const updatedReview = {
+        $set: {
+          reviewText: review.reviewText
+        }
+      }
+      const result = await reviewCollection.updateOne(filter, updatedReview, option)
+      res.send(result)
+      
+    })
+
+
     app.get('/reviews/update/:id', async(req, res)=>{
-      const query = {_id: ObjectId};
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
       const result = await reviewCollection.findOne(query);
       res.send(result)
     })

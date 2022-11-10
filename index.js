@@ -112,6 +112,14 @@ async function runReviews(){
       res.send(result)
     })
 
+    //delete one review item with _id-
+    app.delete('/reviews/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: ObjectId};
+      const result = await reviewCollection.deleteOne(query);
+      res.send(result)
+    })
+
   }
   catch{
     console.error(error)

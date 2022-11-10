@@ -48,23 +48,6 @@ async function run(){
 
 
 
-   
-
-
-
-
-
-
-
-
-    // app.delete('/product/:id', async(req, res) =>{
-    //   const id = req.params.id;
-    //   const query = {_id: ObjectId};
-    //   const result = await productsCollection.deleteOne(query);
-    //   res.send(result);
-    // })
-
-
 
 
 
@@ -117,6 +100,14 @@ async function runReviews(){
       const id = req.params.id;
       const query = {_id: ObjectId};
       const result = await reviewCollection.deleteOne(query);
+      res.send(result)
+    })
+
+
+    //udate one review item with _id-
+    app.get('/reviews/update/:id', async(req, res)=>{
+      const query = {_id: ObjectId};
+      const result = await reviewCollection.findOne(query);
       res.send(result)
     })
 

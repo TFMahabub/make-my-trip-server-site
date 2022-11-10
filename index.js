@@ -1,10 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config()
+const jwt = require('jsonwebtoken')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
 
+
+// require('crypto').randomBytes(64).toString('hex')
 
 
 // middleWare-
@@ -18,6 +21,26 @@ app.use(express.json())
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.tukbsww.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+
+
+
+
+function verifyJWT(req, res, next){
+  const authHeader = req.headers.authorization;
+  if(!authHeader){
+    return res.status(401).send({massage: 'unauthorized access'})
+  }
+  const token = authHeader.split(' ')[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function(err, decoded){
+    if(err){
+      res.status(401).send({message: 'unauthorized access'})
+    }
+    else{
+      req.decoded = decoded;
+      next();
+    }
+  })
+}
 
 
 
@@ -93,8 +116,13 @@ async function runReviews(){
     })
 
     //get with specific email id-
-    app.get('/reviews', async(req, res)=>{
+    app.get('/reviews', verifyJWT, async(req, res)=>{
       const userEmail = req.query.email;
+
+      const decodedEmail = req.decoded.email;
+      if(decodedEmail !== userEmail){
+        res.status(403).send({message: 'unauthorize access'})
+      }
       const query = {userEmail: userEmail};
       const cursor = reviewCollection.find(query);
       const result = await cursor.toArray()
@@ -139,6 +167,22 @@ async function runReviews(){
   }
 }
 runReviews().catch(err => console.error(err))
+
+
+
+async function jwttt(){
+  try{
+    app.post('/jwt', async(req, res) =>{
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h'})
+      res.send({token})
+    })
+  }
+  catch{
+    console.error(error)
+  }
+}
+jwttt().catch(err=>console.error(err))
 
 
 

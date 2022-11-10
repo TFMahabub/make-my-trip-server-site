@@ -7,8 +7,6 @@ const app = express()
 const port = process.env.PORT || 5000;
 
 
-// require('crypto').randomBytes(64).toString('hex')
-
 
 // middleWare-
 app.use(cors())
@@ -16,12 +14,8 @@ app.use(express.json())
 
 
 
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.tukbsww.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-
-
 
 
 
@@ -75,10 +69,6 @@ async function run(){
       const result = await services.insertOne(service)
       res.send(result);
     })
-
-
-
-
 
   }
   catch{
